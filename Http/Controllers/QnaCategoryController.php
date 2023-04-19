@@ -16,13 +16,13 @@ class QnaCategoryController extends Controller
      */
     public function index()
     {
-        $qnaCategories = QnaCategory::with(['children' => function($query){
-                $query->orderBy('position');
-            }])
+        $qnaCategories = QnaCategory::with(['children' => function ($query) {
+            $query->orderBy('position');
+        }])
             ->whereNull('parent_id')
             ->orderBy('position')
             ->get();
-        
+
         return view('qna::admin.qna-category.index', ['qnaCategories' => $qnaCategories]);
     }
 
@@ -30,6 +30,7 @@ class QnaCategoryController extends Controller
      * Q&A 분류 등록 페이지
      *
      * @param QnaCategory $qnaCategory
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function create(QnaCategory $qnaCategory)
@@ -38,9 +39,10 @@ class QnaCategoryController extends Controller
     }
 
     /**
-     * Q&A 분류 저장
+     * Q&A 분류 저장.
      *
      * @param CreateQnaCategoryRequest $request
+     *
      * @return void
      */
     public function store(CreateQnaCategoryRequest $request, QnaCategory $qnaCategory)
@@ -61,9 +63,10 @@ class QnaCategoryController extends Controller
     }
 
     /**
-     * Q&A 분류 일괄수정
+     * Q&A 분류 일괄수정.
      *
      * @param UpdateListQnaCategoryRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function updateList(UpdateListQnaCategoryRequest $request)
@@ -82,9 +85,10 @@ class QnaCategoryController extends Controller
     }
 
     /**
-     * Q&A 분류 삭제
+     * Q&A 분류 삭제.
      *
      * @param qnaCategory $qnaCategory
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(QnaCategory $qnaCategory)

@@ -19,6 +19,7 @@ class QnaAdminController extends Controller
      * Q&A 목록 페이지
      *
      * @param Request $request
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request)
@@ -29,13 +30,13 @@ class QnaAdminController extends Controller
         $sod = $request->filled('sod') ? $request->get('sod') : 'DESC';
 
         $qnas = Qna::with(['category', 'user'])
-            ->when($request->get('qna_category_id'), function($query, $category) {
+            ->when($request->get('qna_category_id'), function ($query, $category) {
                 $query->where('qna_category_id', $category);
             })
-            ->when($request->get('status') !== null, function($query) use ($request) {
+            ->when($request->get('status') !== null, function ($query) use ($request) {
                 $query->where('status', $request->get('status'));
             })
-            ->when($request->get('stx'), function($query, $stx) use ($request) {
+            ->when($request->get('stx'), function ($query, $stx) use ($request) {
                 if ($request->get('sfl') == 'sub_con') {
                     $query->where(function ($query) use ($stx) {
                         $query->where('subject', 'LIKE', "%{$stx}%")
@@ -49,15 +50,15 @@ class QnaAdminController extends Controller
             ->paginate($paginate);
 
         $data = [
-            'statistics' => (object)[
-                'total' => number_format(Qna::count()),
+            'statistics' => (object) [
+                'total'   => number_format(Qna::count()),
                 'pending' => number_format(Qna::where('status', 0)->count()),
-                'draft' => number_format(Qna::where('status', 1)->count()),
-                'answer' => number_format(Qna::where('status', 2)->count()),
+                'draft'   => number_format(Qna::where('status', 1)->count()),
+                'answer'  => number_format(Qna::where('status', 2)->count()),
             ],
             'qnaCategories' => QnaCategory::whereNull('parent_id')->get(),
-            'qnas' => $qnas,
-            'direction' => $request->sod == 'DESC' ? 'ASC' : 'DESC',
+            'qnas'          => $qnas,
+            'direction'     => $request->sod == 'DESC' ? 'ASC' : 'DESC',
         ];
 
         return view('qna::admin.qna.index', $data);
@@ -66,13 +67,14 @@ class QnaAdminController extends Controller
     /**
      * Q&A 수정 페이지
      *
-     * @param ImageService  $imageService
-     * @param Qna $qna
+     * @param ImageService $imageService
+     * @param Qna          $qna
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function edit(ImageService $imageService, Qna $qna)
     {
-        $files = (object)['files' => [], 'images' => []];
+        $files = (object) ['files' => [], 'images' => []];
 
         foreach ($qna->files as $file) {
             if ($imageService->isImageFile($file->path)) {
@@ -85,19 +87,21 @@ class QnaAdminController extends Controller
 
         $data = [
             'qnaCategories' => QnaCategory::all(),
-            'qna' => $qna,
-            'qnaFiles' => $files
+            'qna'           => $qna,
+            'qnaFiles'      => $files,
         ];
 
         return view('qna::admin.qna.edit', $data);
     }
 
     /**
-     * Q&A 수정
-     * 
+     * Q&A 수정.
+     *
      * @todo sms/메일 전송
+     *
      * @param UpdateQnaRequest $request
-     * @param Qna $qna
+     * @param Qna              $qna
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateQnaRequest $request, Qna $qna)
@@ -105,7 +109,7 @@ class QnaAdminController extends Controller
         $qna->fill($request->safe()->all());
 
         // 답변 완료처리
-        if (($qna->isDirty('status') && $qna->status == 2)) {
+        if ($qna->isDirty('status') && $qna->status == 2) {
             $qna->answer_date = Carbon::now();
             // SMS
             if ($qna->is_receive_sms && $qna->user_hp) {
@@ -113,7 +117,6 @@ class QnaAdminController extends Controller
             }
             // 메일
             if ($qna->is_receive_email && $qna->user_email) {
-
             }
         }
         $qna->save();
@@ -124,9 +127,10 @@ class QnaAdminController extends Controller
     }
 
     /**
-     * Q&A 일괄삭제
+     * Q&A 일괄삭제.
      *
      * @param DestroyListQnaRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroyList(DestroyListQnaRequest $request)

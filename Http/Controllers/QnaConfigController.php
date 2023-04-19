@@ -10,7 +10,7 @@ class QnaConfigController extends Controller
 {
     /**
      * 1:1문의 설정 페이지
-     * 
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function index()
@@ -23,9 +23,10 @@ class QnaConfigController extends Controller
     }
 
     /**
-     * 1:1문의 설정 저장
+     * 1:1문의 설정 저장.
      *
      * @param UpdateQnaConfigRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateQnaConfigRequest $request)

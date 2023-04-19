@@ -24,14 +24,14 @@ class UpdateQnaRequest extends FormRequest
     public function rules()
     {
         return [
-            'qna_category_id' => ['sometimes', 'nullable', 'exists:qna_categories,id'],
-            'status' => ['required', 'in:0,1,2'],
+            'qna_category_id'  => ['sometimes', 'nullable', 'exists:qna_categories,id'],
+            'status'           => ['required', 'in:0,1,2'],
             'is_receive_email' => ['sometimes', 'boolean'],
-            'is_receive_sms' => ['sometimes', 'boolean'],
-            'subject' => ['required'],
-            'content' => ['required'],
-            'answer_subject' => ['sometimes', 'nullable'],
-            'answer_content' => ['sometimes', 'nullable'],
+            'is_receive_sms'   => ['sometimes', 'boolean'],
+            'subject'          => ['required'],
+            'content'          => ['required'],
+            'answer_subject'   => ['sometimes', 'nullable'],
+            'answer_content'   => ['sometimes', 'nullable'],
         ];
     }
 
@@ -44,7 +44,7 @@ class UpdateQnaRequest extends FormRequest
     {
         $this->merge([
             'is_receive_email' => $this->is_receive_email ?: 0,
-            'is_receive_sms' => $this->is_receive_sms ?: 0,
+            'is_receive_sms'   => $this->is_receive_sms ?: 0,
         ]);
     }
 }
