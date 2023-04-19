@@ -1,0 +1,13 @@
+{
+    "name": "Qna",
+    "alias": "qna",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Qna\\Providers\\QnaServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
