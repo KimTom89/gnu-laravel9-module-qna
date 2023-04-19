@@ -3,7 +3,6 @@
 namespace Modules\Qna\Http\Requests;
 
 use App\Models\Config;
-
 use App\Rules\ValidateStringByFilter;
 use Illuminate\Foundation\Http\FormRequest;
 use Modules\Qna\Entities\QnaConfig;
@@ -19,6 +18,7 @@ class CreateQnaRequest extends FormRequest
         $this->config = Config::getConfig();
         $this->qnaConfig = QnaConfig::first();
     }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -37,16 +37,17 @@ class CreateQnaRequest extends FormRequest
     public function rules()
     {
         return [
-            'subject' => ['required', new ValidateStringByFilter($this->config->cf_filter, ',')],
-            'content' => ['required', new ValidateStringByFilter($this->config->cf_filter, ',')],
-            'qna_file.*' => ['sometimes', 'file', 'max:' . $this->qnaConfig->upload_file_size],
+            'subject'    => ['required', new ValidateStringByFilter($this->config->cf_filter, ',')],
+            'content'    => ['required', new ValidateStringByFilter($this->config->cf_filter, ',')],
+            'qna_file.*' => ['sometimes', 'file', 'max:'.$this->qnaConfig->upload_file_size],
         ];
     }
 
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param \Illuminate\Validation\Validator $validator
+     *
      * @return void
      */
     public function withValidator($validator)

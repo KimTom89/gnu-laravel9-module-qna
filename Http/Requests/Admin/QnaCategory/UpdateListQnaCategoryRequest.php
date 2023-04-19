@@ -23,7 +23,6 @@ class UpdateListQnaCategoryRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-
     }
 
     /**
@@ -34,9 +33,9 @@ class UpdateListQnaCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'id.*' => ['required', 'exists:qna_categories,id'],
-            'subject.*' => ['required'],
-            'is_use.*' => ['sometimes', 'boolean'],
+            'id.*'       => ['required', 'exists:qna_categories,id'],
+            'subject.*'  => ['required'],
+            'is_use.*'   => ['sometimes', 'boolean'],
             'position.*' => ['required', 'numeric'],
         ];
     }

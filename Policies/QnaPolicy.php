@@ -9,8 +9,7 @@ use Illuminate\Auth\Access\Response;
 use Modules\Qna\Entities\Qna;
 
 /**
- * Q&A 정책
- * 
+ * Q&A 정책.
  */
 class QnaPolicy
 {
@@ -26,8 +25,9 @@ class QnaPolicy
     /**
      * Perform pre-authorization checks.
      *
-     * @param  \App\Models\User  $user
-     * @param  string  $ability
+     * @param \App\Models\User $user
+     * @param string           $ability
+     *
      * @return void|bool
      */
     public function before(User $user, $ability)
@@ -40,7 +40,8 @@ class QnaPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -51,8 +52,9 @@ class QnaPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Qna  $qna
+     * @param \App\Models\User $user
+     * @param \App\Models\Qna  $qna
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Qna $qna)
@@ -65,7 +67,8 @@ class QnaPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -76,8 +79,9 @@ class QnaPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Qna  $qna
+     * @param \App\Models\User $user
+     * @param \App\Models\Qna  $qna
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Qna $qna)
@@ -94,8 +98,9 @@ class QnaPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Qna  $qna
+     * @param \App\Models\User $user
+     * @param \App\Models\Qna  $qna
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Qna $qna)

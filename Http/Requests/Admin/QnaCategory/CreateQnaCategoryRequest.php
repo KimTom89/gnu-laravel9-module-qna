@@ -37,8 +37,8 @@ class CreateQnaCategoryRequest extends FormRequest
     {
         return [
             'parent_id' => ['sometimes', 'nullable', 'exists:qna_categories,id'],
-            'subject' => ['required'],
-            'is_use' => ['sometimes', 'boolean'],
+            'subject'   => ['required'],
+            'is_use'    => ['sometimes', 'boolean'],
         ];
     }
 }

@@ -26,7 +26,7 @@ class QnaController extends Controller
 
     protected $qnaConfig;
 
-   /**
+    /**
      * Create the controller instance.
      *
      * @return void
@@ -36,11 +36,12 @@ class QnaController extends Controller
         $this->config = Config::getConfig();
         $this->qnaConfig = QnaConfig::first();
     }
-    
+
     /**
      * Q&A 목록 페이지
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
@@ -58,15 +59,15 @@ class QnaController extends Controller
         $subjectLimit = Utils::isMobile() ? $this->qnaConfig->mobile_subject_length : $this->qnaConfig->subject_length;
 
         $qnas = Qna::with(['category', 'user', 'files'])
-            ->when($request->get('category'), function($query, $category_id) {
+            ->when($request->get('category'), function ($query, $category_id) {
                 $query->leftJoin('qna_categories', 'qnas.qna_category_id', '=', 'qna_categories.id')
                     ->select('qnas.*');
-                $query->where(function ($join) use ($category_id){
+                $query->where(function ($join) use ($category_id) {
                     $join->where('qna_categories.id', $category_id)
                         ->orWhere('qna_categories.parent_id', $category_id);
                 });
             })
-            ->when($request->get('stx'), function($query, $stx) use ($request) {
+            ->when($request->get('stx'), function ($query, $stx) use ($request) {
                 $query->where($request->get('sfl'), 'LIKE', "%{$stx}%");
             })
             ->where('mb_id', Auth::user()->mb_id)
@@ -76,7 +77,8 @@ class QnaController extends Controller
         $total = $qnas->total();
 
         /**
-         * 결과 데이터 처리
+         * 결과 데이터 처리.
+         *
          * @todo 목록번호 공통처리
          */
         foreach ($qnas as $index => $qna) {
@@ -85,10 +87,10 @@ class QnaController extends Controller
         }
 
         $data = [
-            'qnaConfig' => $this->qnaConfig,
+            'qnaConfig'     => $this->qnaConfig,
             'qnaCategories' => QnaCategory::whereNull('parent_id')->where('is_use', 1)->get(),
-            'total' => number_format($total),
-            'qnas' => $qnas,
+            'total'         => number_format($total),
+            'qnas'          => $qnas,
         ];
 
         return view('qna::index', $data);
@@ -98,34 +100,37 @@ class QnaController extends Controller
      * Q&A 등록 페이지
      *
      * @param Request $request
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function create(Request $request)
     {
         $qna = new Qna();
         /**
-         * 연관된 문의 정보 조회
+         * 연관된 문의 정보 조회.
+         *
          * @todo is_dhtml_editor 구분 (qa_use_editor 설정)
          */
         if ($request->filled('related_qna_id')) {
             $relatedQna = Qna::find($request->get('related_qna_id'));
-            $qna->content = '<br><br>====== 이전 답변내용 =======<br><br>' . $relatedQna->content;
+            $qna->content = '<br><br>====== 이전 답변내용 =======<br><br>'.$relatedQna->content;
         }
-        
+
         $data = [
-            'qnaConfig' => $this->qnaConfig,
+            'qnaConfig'     => $this->qnaConfig,
             'qnaCategories' => QnaCategory::whereNull('parent_id')->where('is_use', 1)->get(),
-            'qna' => $qna,
-            'action' => route('qna.store')
+            'qna'           => $qna,
+            'action'        => route('qna.store'),
         ];
-        
+
         return view('qna::edit', $data);
     }
 
     /**
-     * Q&A 저장
+     * Q&A 저장.
      *
      * @param CreateQnaRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(CreateQnaRequest $request)
@@ -174,7 +179,7 @@ class QnaController extends Controller
         $subjectLimit = Utils::isMobile() ? $this->qnaConfig->mobile_subject_length : $this->qnaConfig->subject_length;
         $qna->subject = Str::limit($qna->subject, $subjectLimit);
 
-        $files = (object)['files' => [], 'images' => []];
+        $files = (object) ['files' => [], 'images' => []];
         $imageService = new ImageService();
         foreach ($qna->files as $file) {
             if ($imageService->isImageFile($file->path)) {
@@ -186,11 +191,11 @@ class QnaController extends Controller
         }
 
         $data = [
-            'qna' => $qna,
+            'qna'       => $qna,
             'qnaConfig' => $this->qnaConfig,
-            'qnaFiles' => $files
+            'qnaFiles'  => $files,
         ];
-        
+
         return view('qna::view', $data);
     }
 
@@ -198,6 +203,7 @@ class QnaController extends Controller
      * Q&A 수정 페이지
      *
      * @param Qna $qna
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function edit(Qna $qna)
@@ -208,20 +214,21 @@ class QnaController extends Controller
         }
 
         $data = [
-            'qnaConfig' => $this->qnaConfig,
+            'qnaConfig'     => $this->qnaConfig,
             'qnaCategories' => QnaCategory::whereNull('parent_id')->where('is_use', 1)->get(),
-            'qna' => $qna,
-            'action' => route('qna.update', ['qna' => $qna])
+            'qna'           => $qna,
+            'action'        => route('qna.update', ['qna' => $qna]),
         ];
 
         return view('qna.edit', $data);
     }
 
     /**
-     * Q&A 수정
+     * Q&A 수정.
      *
      * @param UpdateQnaRequest $request
-     * @param Qna $qna
+     * @param Qna              $qna
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateQnaRequest $request, Qna $qna)
@@ -233,7 +240,7 @@ class QnaController extends Controller
         $qna->fill($request->all());
         $qna->ip = FacadesRequest::ip();
         $qna->save();
-        
+
         // 파일 삭제
         if ($request->get('qna_file_delete')) {
             foreach ($request->get('qna_file_delete') as $fileId) {
@@ -264,9 +271,10 @@ class QnaController extends Controller
     }
 
     /**
-     * Q&A 삭제
+     * Q&A 삭제.
      *
      * @param Qna $qna
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Qna $qna)
