@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Modules\Qna\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Modules\Qna\Entities\Qna;
